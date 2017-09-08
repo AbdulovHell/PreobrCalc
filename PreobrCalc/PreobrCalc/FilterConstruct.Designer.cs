@@ -41,6 +41,8 @@
             this.Att = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveToFileBtn = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FilterPointGrid)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -163,9 +165,22 @@
             // 
             // файлToolStripMenuItem
             // 
+            this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SaveToFileBtn});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.файлToolStripMenuItem.Text = "Файл";
+            // 
+            // SaveToFileBtn
+            // 
+            this.SaveToFileBtn.Name = "SaveToFileBtn";
+            this.SaveToFileBtn.Size = new System.Drawing.Size(209, 22);
+            this.SaveToFileBtn.Text = "Сохранить базу в файл...";
+            this.SaveToFileBtn.Click += new System.EventHandler(this.SaveToFileBtn_Click);
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.Filter = "База фильтров|*.dat";
             // 
             // FilterConstruct
             // 
@@ -199,5 +214,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Att;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SaveToFileBtn;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PreobrCalc
 {
-    class Filter
+    public class Filter
     {
         private List<Point> points;
         private string _name;

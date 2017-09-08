@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using Google.Protobuf;
 
 namespace PreobrCalc
 {
@@ -32,6 +34,7 @@ namespace PreobrCalc
                 filt.Points.Add(new Filter.Point(tempFreq, tempAtt));
             }
 
+            Form1.Filters.Add(filt);
             foreach (Filter.Point item in filt.Points)
             {
                 chart1.Series[0].Points.AddXY(item.Freq, item.Att);
@@ -113,6 +116,35 @@ namespace PreobrCalc
         private void FilterPointGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             button1_Click(sender, e);
+        }
+
+        private void SaveToFileBtn_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.ShowDialog();
+
+            FiltersBase.FiltersBase fBase = new FiltersBase.FiltersBase(); // Code as before
+            foreach (var item in Form1.Filters)
+            {
+                FiltersBase.Filter tempf = new FiltersBase.Filter();
+                tempf.Band = item.Band;
+                tempf.CenterFreq = item.CenterFreq;
+                tempf.IsTunable = item.IsTunable;
+                tempf.Name = item.Name;
+                foreach (var item2 in item.Points)
+                {
+                    FiltersBase.Point p = new FiltersBase.Point();
+                    p.Att = item2.Att;
+                    p.Freq = item2.Freq;
+                    tempf.Points.Add(p);
+                }
+
+                fBase.Filters.Add(tempf);
+            }
+
+            using (var output = File.Create("filters.dat"))
+            {
+                fBase.WriteTo(output);
+            }
         }
     }
 }
