@@ -8,7 +8,17 @@ namespace PreobrCalc
 {
     class Filter
     {
-        public List<Point> Points;
+        private List<Point> points;
+        private string _name;
+        private bool _isTunable;
+        private double _cntrFreq;
+        private double _band;
+
+        public string Name { get => _name; set => _name = value; }
+        public bool IsTunable { get => _isTunable; set => _isTunable = value; }
+        public double CenterFreq { get => _cntrFreq; set => _cntrFreq = value; }
+        public double Band { get => _band; set => _band = value; }
+        internal List<Point> Points { get => points; set => points = value; }
 
         public class Point
         {
@@ -28,6 +38,10 @@ namespace PreobrCalc
         public Filter()
         {
             Points = new List<Point>();
+            _name = "Default";
+            _isTunable = false;
+            _cntrFreq = 0;
+            _band = 0;
         }
 
         public double Apply(double Freq, double att)

@@ -1,0 +1,21 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+
+option csharp_namespace = "PreobrCalc.FiltersBase";
+
+message Filter{
+	repeated Point Points = 1 ;
+	string Name = 2 ;
+	bool isTunable = 3 ;
+	double CenterFreq = 4 ;
+	double Band = 5 ;
+}
+
+message Point{
+	double Freq = 1 ;
+	double Att = 2 ;
+}
+
+message FiltersBase{
+	repeated Filter Filters = 1 ;
+}
