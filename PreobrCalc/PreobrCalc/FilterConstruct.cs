@@ -17,6 +17,11 @@ namespace PreobrCalc
         public FilterConstruct()
         {
             InitializeComponent();
+
+            foreach (var item in Form1.Filters)
+            {
+                FiltersList.Items.Add(item);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -31,11 +36,11 @@ namespace PreobrCalc
                     continue;
                 if (!Input.TryParse(item.Cells[1].Value.ToString(), out tempAtt))
                     continue;
-                filt.Points.Add(new Filter.Point(tempFreq, tempAtt));
+                filt.Points.Add(new Point(tempFreq, tempAtt));
             }
 
-            Form1.Filters.Add(filt);
-            foreach (Filter.Point item in filt.Points)
+            if (sender == button1) Form1.Filters.Add(filt);
+            foreach (Point item in filt.Points)
             {
                 chart1.Series[0].Points.AddXY(item.Freq, item.Att);
             }
@@ -59,30 +64,30 @@ namespace PreobrCalc
                     continue;
                 if (!Input.TryParse(item.Cells[1].Value.ToString(), out tempAtt))
                     continue;
-                filt.Points.Add(new Filter.Point(tempFreq, tempAtt));
+                filt.Points.Add(new Point(tempFreq, tempAtt));
             }
 
             if (filt.Points.Count < 2) return;
 
             Filter filt2 = new Filter();
-            filt2.Points.Add(new Filter.Point(1, -100));
-            filt2.Points.Add(new Filter.Point(690, -52));
-            filt2.Points.Add(new Filter.Point(930, -36));
-            filt2.Points.Add(new Filter.Point(1150, -18));
-            filt2.Points.Add(new Filter.Point(1230, -10));
-            filt2.Points.Add(new Filter.Point(1300, 0));
-            filt2.Points.Add(new Filter.Point(1400, 0));
-            filt2.Points.Add(new Filter.Point(1510, 0));
-            filt2.Points.Add(new Filter.Point(3000, -10));
-            filt2.Points.Add(new Filter.Point(4000, -24));
-            filt2.Points.Add(new Filter.Point(5000, -52));
-            filt2.Points.Add(new Filter.Point(5100, -54));
-            filt2.Points.Add(new Filter.Point(5500, -48));
-            filt2.Points.Add(new Filter.Point(70000, -45));
+            filt2.Points.Add(new Point(1, -100));
+            filt2.Points.Add(new Point(690, -52));
+            filt2.Points.Add(new Point(930, -36));
+            filt2.Points.Add(new Point(1150, -18));
+            filt2.Points.Add(new Point(1230, -10));
+            filt2.Points.Add(new Point(1300, 0));
+            filt2.Points.Add(new Point(1400, 0));
+            filt2.Points.Add(new Point(1510, 0));
+            filt2.Points.Add(new Point(3000, -10));
+            filt2.Points.Add(new Point(4000, -24));
+            filt2.Points.Add(new Point(5000, -52));
+            filt2.Points.Add(new Point(5100, -54));
+            filt2.Points.Add(new Point(5500, -48));
+            filt2.Points.Add(new Point(70000, -45));
 
             Filter temp = filt + filt2;
 
-            foreach (Filter.Point item in temp.Points)
+            foreach (Point item in temp.Points)
             {
                 chart1.Series[1].Points.AddXY(item.Freq, item.Att);
             }
@@ -122,19 +127,23 @@ namespace PreobrCalc
         {
             saveFileDialog1.ShowDialog();
 
-            FiltersBase.FiltersBase fBase = new FiltersBase.FiltersBase(); // Code as before
+            FiltersBase.FiltersBase fBase = new FiltersBase.FiltersBase();
             foreach (var item in Form1.Filters)
             {
-                FiltersBase.Filter tempf = new FiltersBase.Filter();
-                tempf.Band = item.Band;
-                tempf.CenterFreq = item.CenterFreq;
-                tempf.IsTunable = item.IsTunable;
-                tempf.Name = item.Name;
+                FiltersBase.Filter tempf = new FiltersBase.Filter()
+                {
+                    Band = item.Band,
+                    CenterFreq = item.CenterFreq,
+                    IsTunable = item.IsTunable,
+                    Name = item.Name
+                };
                 foreach (var item2 in item.Points)
                 {
-                    FiltersBase.Point p = new FiltersBase.Point();
-                    p.Att = item2.Att;
-                    p.Freq = item2.Freq;
+                    FiltersBase.Point p = new FiltersBase.Point()
+                    {
+                        Att = item2.Att,
+                        Freq = item2.Freq
+                    };
                     tempf.Points.Add(p);
                 }
 
@@ -144,6 +153,16 @@ namespace PreobrCalc
             using (var output = File.Create("filters.dat"))
             {
                 fBase.WriteTo(output);
+            }
+        }
+
+        private void FiltersList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Filter temp=(Filter)FiltersList.SelectedItem;
+            chart1.Series[0].Points.Clear();
+            foreach (var item in temp.Points)
+            {
+                chart1.Series[0].Points.AddXY(item.Freq, item.Att);
             }
         }
     }

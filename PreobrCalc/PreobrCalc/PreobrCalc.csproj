@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blocks.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="FilterConstruct.cs">
       <SubType>Form</SubType>
@@ -64,8 +65,15 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Input.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SmartPictureBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SmartPictureBox.Designer.cs">
+      <DependentUpon>SmartPictureBox.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="FilterConstruct.resx">
       <DependentUpon>FilterConstruct.cs</DependentUpon>
     </EmbeddedResource>
@@ -81,6 +89,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SmartPictureBox.resx">
+      <DependentUpon>SmartPictureBox.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

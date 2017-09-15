@@ -20,21 +20,6 @@ namespace PreobrCalc
         public double Band { get => _band; set => _band = value; }
         internal List<Point> Points { get => points; set => points = value; }
 
-        public class Point
-        {
-            private double _freq;
-            private double _att;
-
-            public double Freq { get => _freq; set => _freq = value; }
-            public double Att { get => _att; set => _att = value; }
-
-            public Point(double freq, double att)
-            {
-                _freq = freq;
-                _att = att;
-            }
-        }
-
         public Filter()
         {
             Points = new List<Point>();
@@ -42,6 +27,15 @@ namespace PreobrCalc
             _isTunable = false;
             _cntrFreq = 0;
             _band = 0;
+        }
+
+        public Filter(string name,bool isTun,double CntrFreq,double Bnd)
+        {
+            Points = new List<Point>();
+            _name = name;
+            _isTunable = isTun;
+            _cntrFreq = CntrFreq;
+            _band = Bnd;
         }
 
         public double Apply(double Freq, double att)
@@ -74,7 +68,7 @@ namespace PreobrCalc
         {
             Filter NewFilt = new Filter();
             double tempAtt = 0;
-            Filter.Point last1=filt1.Points[0], last2=filt2.Points[0];
+            Point last1=filt1.Points[0], last2=filt2.Points[0];
             //filt1.Points.Add(new Point(100000, filt1.Points[filt1.Points.Count - 1].Att));
             //filt2.Points.Add(new Point(100000, filt2.Points[filt2.Points.Count - 1].Att));
             while (filt1.Points.Count > 0 || filt2.Points.Count > 0)
@@ -85,7 +79,7 @@ namespace PreobrCalc
                 {
                     for(int i = 0; i < filt2.Points.Count; i++)
                     {
-                        NewFilt.Points.Add(new Filter.Point(filt2.Points[i].Freq, filt2.Points[i].Att+last1.Att));
+                        NewFilt.Points.Add(new Point(filt2.Points[i].Freq, filt2.Points[i].Att+last1.Att));
                     }
                     break;
                 }
@@ -93,7 +87,7 @@ namespace PreobrCalc
                 {
                     for (int i = 0; i < filt1.Points.Count; i++)
                     {
-                        NewFilt.Points.Add(new Filter.Point(filt1.Points[i].Freq, filt1.Points[i].Att + last2.Att));
+                        NewFilt.Points.Add(new Point(filt1.Points[i].Freq, filt1.Points[i].Att + last2.Att));
                     }
                     break;
                 }
