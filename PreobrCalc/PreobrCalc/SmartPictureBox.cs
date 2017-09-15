@@ -14,6 +14,11 @@ namespace PreobrCalc
     {
         int X = 0;
         int Y = 0;
+        const int dopSize = 2;
+
+        IBlock opBlock;
+
+        public IBlock OperationBlock { get => opBlock; }
 
         public SmartPictureBox()
         {
@@ -21,6 +26,43 @@ namespace PreobrCalc
             LeftBtn.Visible = false;
             MidBtn.Visible = false;
             RightBtn.Visible = false;
+        }
+
+        public SmartPictureBox(Image img, EventHandler L, EventHandler M, EventHandler R)
+        {
+            InitializeComponent();
+            LeftBtn.Visible = false;
+            MidBtn.Visible = false;
+            RightBtn.Visible = false;
+            ImageBox.Image = img;
+            LeftBtn.Click += L;
+            MidBtn.Click += M;
+            RightBtn.Click += R;
+        }
+
+        public SmartPictureBox(Image img)
+        {
+            InitializeComponent();
+            LeftBtn.Visible = false;
+            MidBtn.Visible = false;
+            RightBtn.Visible = false;
+            ImageBox.Image = img;
+        }
+
+        public SmartPictureBox(EventHandler L, EventHandler M, EventHandler R)
+        {
+            InitializeComponent();
+            LeftBtn.Visible = false;
+            MidBtn.Visible = false;
+            RightBtn.Visible = false;
+            LeftBtn.Click += L;
+            MidBtn.Click += M;
+            RightBtn.Click += R;
+        }
+
+        ~SmartPictureBox()
+        {
+            timer1.Enabled = false;
         }
 
         public void SetImage(Image img)
@@ -50,30 +92,33 @@ namespace PreobrCalc
             RightBtn.Visible = b;
         }
 
-        private void ImageBox_MouseLeave(object sender, EventArgs e)
+        private void Timer1_Tick(object sender, EventArgs e)
         {
-            X = Parent.Location.X + Location.X + 10;
-            Y = Parent.Location.Y + Location.Y + 31;
-            Rectangle rect = new Rectangle(X, Y, 64, 64);
-            if (rect.Contains(MousePosition))
+            try
             {
-                VisibleButtons(true);
+                X = Parent.Parent.Location.X + Parent.Location.X + Location.X + 10 - dopSize;
+                Y = Parent.Parent.Location.Y + Parent.Location.Y + Location.Y + 31 - dopSize;
+                Rectangle rect = new Rectangle(X, Y, 64 + dopSize, 64 + dopSize);
+                if (rect.Contains(MousePosition))
+                {
+                    VisibleButtons(true);
+                }
+                else
+                    VisibleButtons(false);
+            }catch(Exception exception)
+            {
+
             }
-            else
-                VisibleButtons(false);
         }
 
-        private void ImageBox_MouseMove(object sender, MouseEventArgs e)
+        public void AssignOperation(IBlock op)
         {
-            X = Parent.Location.X + Location.X + 10;
-            Y = Parent.Location.Y + Location.Y + 31;
-            Rectangle rect = new Rectangle(X, Y, 64, 64);
-            if (rect.Contains(MousePosition))
-            {
-                VisibleButtons(true);
-            }
-            else
-                VisibleButtons(false);
+            opBlock = op;
+        }
+
+        public Type GetOperationType()
+        {
+            return opBlock.GetType();
         }
     }
 }

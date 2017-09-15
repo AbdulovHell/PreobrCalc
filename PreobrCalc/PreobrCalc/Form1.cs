@@ -17,14 +17,14 @@ namespace PreobrCalc
         private Rectangle DragBoxFromMouseDown;
         private object TempObject;
         private System.Drawing.Point ScreenOffset;
-        private List<IBlock> Blocks;
+        //private List<IBlock> Blocks;
         private List<List<Point>> calcResults;
 
         public Form1()
         {
             InitializeComponent();
             _filters = new List<Filter>();
-            Blocks = new List<IBlock>();
+            //Blocks = new List<IBlock>();
             calcResults = new List<List<Point>>();
             _filters.Clear();
         }
@@ -122,25 +122,22 @@ namespace PreobrCalc
                 {
                     if (pic != null)
                     {
-                        PictureBox NewPic = new PictureBox()
-                        {
-                            Image = pic.Image,
-                            SizeMode = pic.SizeMode,
-                            BorderStyle = pic.BorderStyle
-                        };
-                        NewPic.Click += new System.EventHandler(SelectBlock);
-                        //NewPic.Name = "Default";
-                        //TODO: добавление в панель и лист очередности
+                        SmartPictureBox NewPic = new SmartPictureBox(pic.Image);
                         if (pic == FinPanelSource)
-                            Blocks.Add(new BSource());
+                        {
+                            NewPic.AssignOperation(new BSource());
+                        }
                         if (pic == AttPanelSource)
-                            Blocks.Add(new BAttenuator());
+                            NewPic.AssignOperation(new BAttenuator());
                         if (pic == FiltPanelSource)
-                            Blocks.Add(new BFilter());
-                        //Type a=Blocks[0].GetType();
+                            NewPic.AssignOperation(new BFilter());
+
+                        NewPic.SetLeftBtnEvent(DrawResult);
+                        NewPic.SetRightBtnEvent(DeleteBlock);
+                        NewPic.SetMidBtnEvent(SetupBlock);
 
                         ElementLineBox.Controls.Add(NewPic);
-                        ElementLineBox.MinimumSize = new Size(ElementLineBox.MinimumSize.Width + 70, ElementLineBox.MinimumSize.Height);
+                        ElementLineBox.MinimumSize = new Size((ElementLineBox.Controls.Count + 1) * 70, ElementLineBox.MinimumSize.Height);
                     }
                 }
             }
@@ -162,61 +159,100 @@ namespace PreobrCalc
                 e.Effect = DragDropEffects.None;
         }
 
-        private void SelectBlock(object sender, EventArgs e)
-        {
-            for (int i = 0; i < ElementLineBox.Controls.Count; i++)
-            {
-                if (ElementLineBox.Controls[i] == sender)
-                {
-                    Type t = Blocks[i].GetType();
-                    SelectedBlockParam.Text = t.Name + "[" + i.ToString() + "]";
+        //private void SelectBlock(object sender, EventArgs e)
+        //{
+        //    for (int i = 0; i < ElementLineBox.Controls.Count; i++)
+        //    {
+        //        if (ElementLineBox.Controls[i] == sender)
+        //        {
+        //            Type t = Blocks[i].GetType();
+        //            //SelectedBlockParam.Text = t.Name + "[" + i.ToString() + "]";
 
-                    ((PictureBox)ElementLineBox.Controls[i]).BorderStyle = BorderStyle.Fixed3D;
-                    for (int j = 0; j < ElementLineBox.Controls.Count; j++)
-                    {
-                        if (j == i) continue;
-                        ((PictureBox)ElementLineBox.Controls[j]).BorderStyle = BorderStyle.FixedSingle;
-                    }
-                }
-            }
-        }
+        //            ((PictureBox)ElementLineBox.Controls[i]).BorderStyle = BorderStyle.Fixed3D;
+        //            for (int j = 0; j < ElementLineBox.Controls.Count; j++)
+        //            {
+        //                if (j == i) continue;
+        //                ((PictureBox)ElementLineBox.Controls[j]).BorderStyle = BorderStyle.FixedSingle;
+        //            }
+        //        }
+        //    }
+        //}
 
         private void CalcBtn_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < Blocks.Count; i++)
+            System.Diagnostics.Stopwatch ms = new System.Diagnostics.Stopwatch();
+            ms.Start();
+            CalcResults.Clear();
+            for (int i = 0; i < ElementLineBox.Controls.Count; i++)
             {
-                if (i == 0 && Blocks[i].GetType() == typeof(BSource))
+                SmartPictureBox box = (SmartPictureBox)ElementLineBox.Controls[i];
+                if (i == 0 && box.GetOperationType() == typeof(BSource))
                 {
                     CalcResults.Add(new List<Point>());
-                    ((BSource)Blocks[i]).Generate(CalcResults[0]);
+                    ((BSource)box.OperationBlock).Generate(CalcResults[0]);
+                }
+                else if (i == 0)
+                {
+                    MessageBox.Show("Расчет прерван: Первым блоком должен идти источник сигнала.");
+                    return;
                 }
                 else
                 {
                     CalcResults.Add(new List<Point>());
-                    Blocks[i].Apply(CalcResults[CalcResults.Count - 2], CalcResults[CalcResults.Count - 1]);
+                    box.OperationBlock.Apply(CalcResults[CalcResults.Count - 2], CalcResults[CalcResults.Count - 1]);
+                }
+            }
+            ms.Stop();
+            MessageBox.Show("Готово. " + ms.ElapsedMilliseconds.ToString() + " мс.");
+        }
+
+        private void DrawResult(object sender, EventArgs e)
+        {
+            for (int i = 0; i < ElementLineBox.Controls.Count; i++)
+            {
+                if (((Button)sender).Parent == ElementLineBox.Controls[i])
+                {
+                    if (i > 0)
+                    {
+                        ChartProvider chart;
+                        if (((SmartPictureBox)ElementLineBox.Controls[i]).GetOperationType()==typeof(BFilter))
+                        {
+                            SmartPictureBox box = (SmartPictureBox)ElementLineBox.Controls[i];
+                            chart = new ChartProvider(CalcResults[i - 1], CalcResults[i], ((BFilter)(box.OperationBlock)).Filter);
+                        }
+                        else
+                            chart = new ChartProvider(CalcResults[i - 1], CalcResults[i]);
+                        chart.Show();
+                    }
+                    //TODO: для источника сигнала
+                    return;
                 }
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void DeleteBlock(object sender, EventArgs e)
         {
-            smartPictureBox1.SetImage(FinPanelSource.Image);
-            smartPictureBox1.SetLeftBtnEvent(button2_Click);
-            smartPictureBox1.SetMidBtnEvent(button2_Click);
-            smartPictureBox1.SetRightBtnEvent(button2_Click);
+            foreach (SmartPictureBox item in ElementLineBox.Controls)
+            {
+                if (item == ((Button)sender).Parent)
+                {
+                    ElementLineBox.Controls.Remove(item);
+                    return;
+                }
+            }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void SetupBlock(object sender, EventArgs e)
         {
-            SelectedBlockParam.Text = "[" + "]";
-        }
-
-        private void Form1_MouseMove(object sender, MouseEventArgs e)
-        {
-            label1.Text = "X:" + MousePosition.X.ToString() + " Y:" + MousePosition.Y.ToString();
-            label2.Text = "X:" + (smartPictureBox1.Location.X + Location.X).ToString() + " Y:" + (smartPictureBox1.Location.Y + Location.Y).ToString();
-            label3.Text = "X:" + SystemInformation.WorkingArea.Location.X.ToString() + " Y:" + SystemInformation.WorkingArea.Location.Y.ToString();
-            label4.Text = "X:" + this.ClientRectangle.X.ToString() + " Y:" + this.ClientRectangle.Y.ToString();
+            for (int i = 0; i < ElementLineBox.Controls.Count; i++)
+            {
+                if (((Button)sender).Parent == ElementLineBox.Controls[i])
+                {
+                    BlockSetup stp = new BlockSetup(((SmartPictureBox)ElementLineBox.Controls[i]).OperationBlock);
+                    stp.Show();
+                    return;
+                }
+            }
         }
     }
 }

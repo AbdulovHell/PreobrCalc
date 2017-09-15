@@ -50,6 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blocks.cs" />
+    <Compile Include="BlockSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BlockSetup.Designer.cs">
+      <DependentUpon>BlockSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Filter.cs" />
     <Compile Include="FilterConstruct.cs">
       <SubType>Form</SubType>
@@ -64,6 +70,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="ChartProvider.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChartProvider.Designer.cs">
+      <DependentUpon>ChartProvider.cs</DependentUpon>
+    </Compile>
     <Compile Include="Input.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
@@ -74,11 +86,17 @@
     <Compile Include="SmartPictureBox.Designer.cs">
       <DependentUpon>SmartPictureBox.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="BlockSetup.resx">
+      <DependentUpon>BlockSetup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FilterConstruct.resx">
       <DependentUpon>FilterConstruct.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChartProvider.resx">
+      <DependentUpon>ChartProvider.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SmartPictureBox));
             this.ImageBox = new System.Windows.Forms.PictureBox();
             this.LeftBtn = new System.Windows.Forms.Button();
             this.MidBtn = new System.Windows.Forms.Button();
             this.RightBtn = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ImageBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,8 +46,6 @@
             this.ImageBox.Size = new System.Drawing.Size(62, 62);
             this.ImageBox.TabIndex = 0;
             this.ImageBox.TabStop = false;
-            this.ImageBox.MouseLeave += new System.EventHandler(this.ImageBox_MouseLeave);
-            this.ImageBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ImageBox_MouseMove);
             // 
             // LeftBtn
             // 
@@ -83,6 +83,11 @@
             this.RightBtn.TabStop = false;
             this.RightBtn.UseVisualStyleBackColor = true;
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
+            // 
             // SmartPictureBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -107,5 +112,6 @@
         private System.Windows.Forms.Button LeftBtn;
         private System.Windows.Forms.Button MidBtn;
         private System.Windows.Forms.Button RightBtn;
+        private System.Windows.Forms.Timer timer1;
     }
 }
