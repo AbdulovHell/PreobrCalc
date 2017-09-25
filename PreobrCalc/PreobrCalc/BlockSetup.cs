@@ -13,17 +13,19 @@ namespace PreobrCalc
     public partial class BlockSetup : Form
     {
         IBlock op;
+        double Fin = 0;
 
         public BlockSetup()
         {
             InitializeComponent();
         }
 
-        public BlockSetup(IBlock operation)
+        public BlockSetup(IBlock operation, double Fin)
         {
             InitializeComponent();
 
             op = operation;
+            this.Fin = Fin;
             if (operation.GetType() == typeof(BSource))
             {
                 BSource SrcOp = (BSource)operation;
@@ -58,7 +60,7 @@ namespace PreobrCalc
 
                 foreach (var item in Form1.Filters)
                 {
-                    comboBox1.Items.Add(item);
+                    comboBox1.Items.Add(item.Name);
                 }
             }
             else if (operation.GetType() == typeof(BMixer))
@@ -72,7 +74,18 @@ namespace PreobrCalc
 
                 FinFgetChk.Visible = true;
                 FinFgetChk.Checked = SrcOp.FinBelowFget;
-                textBox1.Text=
+                label1.Text = "Fpr, MHz";
+                if (FinFgetChk.Checked)
+                {
+                    textBox1.Text = (Fin - SrcOp.Fget).ToString();
+                }
+                else
+                {
+                    textBox1.Text = (Fin + SrcOp.Fget).ToString();
+                }
+
+                label2.Text = "Порядок, 3-5";
+                textBox2.Text = SrcOp.Order.ToString();
             }
         }
 
@@ -82,27 +95,60 @@ namespace PreobrCalc
             {
                 BSource SrcOp = (BSource)op;
 
-                if (Input.TryParse(textBox2.Text, out double temp2))
-                    SrcOp.Att = temp2;
-                if (Input.TryParse(textBox1.Text, out double temp1))
-                    SrcOp.Freq = temp1;
-                if (Input.TryParse(textBox3.Text, out double temp3))
-                    SrcOp.Band = temp3;
-                if (Input.TryParse(textBox4.Text, out double temp4))
-                    SrcOp.Step = temp4;
+                if (Input.TryParse(textBox2.Text, out double tempAtt) && Input.TryParse(textBox1.Text, out double tempFreq) && Input.TryParse(textBox3.Text, out double tempBand) && Input.TryParse(textBox4.Text, out double tempStep))
+                {
+                    if (!SrcOp.Setup(tempFreq, tempStep, tempBand, tempAtt))
+                    {
+                        MessageBox.Show("Недопустимые значения");
+                    }
+                }
+                else
+                    MessageBox.Show("Ошибка ввода");
             }
             else if (op.GetType() == typeof(BAttenuator))
             {
                 BAttenuator SrcOp = (BAttenuator)op;
 
-                if (Input.TryParse(textBox2.Text, out double temp2))
-                    SrcOp.Att = temp2;
+                if (Input.TryParse(textBox2.Text, out double tempAtt))
+                {
+                    if (!SrcOp.Setup(tempAtt))
+                    {
+                        MessageBox.Show("Недопустимые значения");
+                    }
+                }
+                else
+                    MessageBox.Show("Ошибка ввода");
+
             }
             else if (op.GetType() == typeof(BFilter))
             {
                 BFilter SrcOp = (BFilter)op;
 
-                SrcOp.Filter = (Filter)comboBox1.SelectedItem;
+                int index = comboBox1.SelectedIndex;
+                if (index < 0 || index > Form1.Filters.Count - 1) return;
+                if (!SrcOp.Setup(Form1.Filters[index]))
+                {
+                    MessageBox.Show("Фильтр не выбран");
+                }
+            }
+            else if (op.GetType() == typeof(BMixer))
+            {
+                BMixer SrcOp = (BMixer)op;
+
+                if (Input.TryParse(textBox2.Text, out double tempOrder) && Input.TryParse(textBox1.Text, out double Fpr))
+                {
+                    double Fget = 0;
+                    if (FinFgetChk.Checked)
+                    {
+                        Fget = Fin - Fpr;
+                    }
+                    else
+                    {
+                        Fget = Fin + Fpr;
+                    }
+
+                    SrcOp.Setup(Fget, (int)tempOrder, FinFgetChk.Checked);
+                }
             }
         }
     }

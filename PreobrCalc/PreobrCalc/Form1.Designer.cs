@@ -29,28 +29,27 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.button1 = new System.Windows.Forms.Button();
             this.ElementLineBox = new System.Windows.Forms.FlowLayoutPanel();
             this.ElementsSourceBox = new System.Windows.Forms.FlowLayoutPanel();
             this.FinPanelSource = new System.Windows.Forms.PictureBox();
             this.AttPanelSource = new System.Windows.Forms.PictureBox();
+            this.MixerPanelSource = new System.Windows.Forms.PictureBox();
             this.FiltPanelSource = new System.Windows.Forms.PictureBox();
             this.CalcBtn = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BaseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LoadFilterBaseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.InstrumentMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenFilterEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SettingLineBox = new System.Windows.Forms.FlowLayoutPanel();
             this.ElementsSourceBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FinPanelSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttPanelSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MixerPanelSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FiltPanelSource)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(511, 27);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(160, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Редактор фильтров";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // ElementLineBox
             // 
@@ -58,7 +57,7 @@
             this.ElementLineBox.AutoSize = true;
             this.ElementLineBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ElementLineBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ElementLineBox.Location = new System.Drawing.Point(12, 128);
+            this.ElementLineBox.Location = new System.Drawing.Point(12, 118);
             this.ElementLineBox.MinimumSize = new System.Drawing.Size(70, 70);
             this.ElementLineBox.Name = "ElementLineBox";
             this.ElementLineBox.Size = new System.Drawing.Size(70, 70);
@@ -72,10 +71,11 @@
             this.ElementsSourceBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ElementsSourceBox.Controls.Add(this.FinPanelSource);
             this.ElementsSourceBox.Controls.Add(this.AttPanelSource);
+            this.ElementsSourceBox.Controls.Add(this.MixerPanelSource);
             this.ElementsSourceBox.Controls.Add(this.FiltPanelSource);
-            this.ElementsSourceBox.Location = new System.Drawing.Point(12, 12);
+            this.ElementsSourceBox.Location = new System.Drawing.Point(12, 40);
             this.ElementsSourceBox.Name = "ElementsSourceBox";
-            this.ElementsSourceBox.Size = new System.Drawing.Size(216, 72);
+            this.ElementsSourceBox.Size = new System.Drawing.Size(288, 72);
             this.ElementsSourceBox.TabIndex = 3;
             this.ElementsSourceBox.QueryContinueDrag += new System.Windows.Forms.QueryContinueDragEventHandler(this.ElementsSourceBox_QueryContinueDrag);
             // 
@@ -107,11 +107,25 @@
             this.AttPanelSource.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveAction);
             this.AttPanelSource.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MouseUpAction);
             // 
+            // MixerPanelSource
+            // 
+            this.MixerPanelSource.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.MixerPanelSource.Image = ((System.Drawing.Image)(resources.GetObject("MixerPanelSource.Image")));
+            this.MixerPanelSource.Location = new System.Drawing.Point(147, 3);
+            this.MixerPanelSource.Name = "MixerPanelSource";
+            this.MixerPanelSource.Size = new System.Drawing.Size(66, 66);
+            this.MixerPanelSource.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.MixerPanelSource.TabIndex = 1;
+            this.MixerPanelSource.TabStop = false;
+            this.MixerPanelSource.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDownAction);
+            this.MixerPanelSource.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveAction);
+            this.MixerPanelSource.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MouseUpAction);
+            // 
             // FiltPanelSource
             // 
             this.FiltPanelSource.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.FiltPanelSource.Image = ((System.Drawing.Image)(resources.GetObject("FiltPanelSource.Image")));
-            this.FiltPanelSource.Location = new System.Drawing.Point(147, 3);
+            this.FiltPanelSource.Location = new System.Drawing.Point(219, 3);
             this.FiltPanelSource.Name = "FiltPanelSource";
             this.FiltPanelSource.Size = new System.Drawing.Size(66, 66);
             this.FiltPanelSource.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -123,7 +137,7 @@
             // 
             // CalcBtn
             // 
-            this.CalcBtn.Location = new System.Drawing.Point(511, 128);
+            this.CalcBtn.Location = new System.Drawing.Point(306, 89);
             this.CalcBtn.Name = "CalcBtn";
             this.CalcBtn.Size = new System.Drawing.Size(75, 23);
             this.CalcBtn.TabIndex = 5;
@@ -131,15 +145,77 @@
             this.CalcBtn.UseVisualStyleBackColor = true;
             this.CalcBtn.Click += new System.EventHandler(this.CalcBtn_Click);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.BaseMenuItem,
+            this.InstrumentMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(904, 24);
+            this.menuStrip1.TabIndex = 6;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.fileToolStripMenuItem.Text = "Файл";
+            // 
+            // BaseMenuItem
+            // 
+            this.BaseMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.LoadFilterBaseMenuItem});
+            this.BaseMenuItem.Name = "BaseMenuItem";
+            this.BaseMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.BaseMenuItem.Text = "Базы";
+            // 
+            // LoadFilterBaseMenuItem
+            // 
+            this.LoadFilterBaseMenuItem.Name = "LoadFilterBaseMenuItem";
+            this.LoadFilterBaseMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.LoadFilterBaseMenuItem.Text = "Загрузить базу фильтров...";
+            // 
+            // InstrumentMenuItem
+            // 
+            this.InstrumentMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.OpenFilterEditorMenuItem});
+            this.InstrumentMenuItem.Name = "InstrumentMenuItem";
+            this.InstrumentMenuItem.Size = new System.Drawing.Size(95, 20);
+            this.InstrumentMenuItem.Text = "Инструменты";
+            // 
+            // OpenFilterEditorMenuItem
+            // 
+            this.OpenFilterEditorMenuItem.Name = "OpenFilterEditorMenuItem";
+            this.OpenFilterEditorMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.OpenFilterEditorMenuItem.Text = "Редактор фильтров";
+            this.OpenFilterEditorMenuItem.Click += new System.EventHandler(this.OpenFilterEditorBtn_Click);
+            // 
+            // SettingLineBox
+            // 
+            this.SettingLineBox.AutoScroll = true;
+            this.SettingLineBox.AutoSize = true;
+            this.SettingLineBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.SettingLineBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SettingLineBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.SettingLineBox.Location = new System.Drawing.Point(0, 231);
+            this.SettingLineBox.MinimumSize = new System.Drawing.Size(200, 330);
+            this.SettingLineBox.Name = "SettingLineBox";
+            this.SettingLineBox.Size = new System.Drawing.Size(904, 330);
+            this.SettingLineBox.TabIndex = 7;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(904, 560);
+            this.ClientSize = new System.Drawing.Size(904, 561);
+            this.Controls.Add(this.SettingLineBox);
             this.Controls.Add(this.CalcBtn);
             this.Controls.Add(this.ElementsSourceBox);
             this.Controls.Add(this.ElementLineBox);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -147,21 +223,30 @@
             this.ElementsSourceBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FinPanelSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttPanelSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MixerPanelSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.FiltPanelSource)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.FlowLayoutPanel ElementLineBox;
         private System.Windows.Forms.FlowLayoutPanel ElementsSourceBox;
         private System.Windows.Forms.PictureBox FinPanelSource;
         private System.Windows.Forms.PictureBox FiltPanelSource;
         private System.Windows.Forms.PictureBox AttPanelSource;
         private System.Windows.Forms.Button CalcBtn;
+        private System.Windows.Forms.PictureBox MixerPanelSource;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem BaseMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LoadFilterBaseMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem InstrumentMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenFilterEditorMenuItem;
+        private System.Windows.Forms.FlowLayoutPanel SettingLineBox;
     }
 }
 

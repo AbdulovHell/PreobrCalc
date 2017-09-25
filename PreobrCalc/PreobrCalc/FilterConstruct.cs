@@ -14,41 +14,23 @@ namespace PreobrCalc
 {
     public partial class FilterConstruct : Form
     {
+        enum LoadAction
+        {
+            NOPE,
+            MULT,
+            OVER
+        };
+
+        LoadAction LdAct = LoadAction.NOPE;
+
         public FilterConstruct()
         {
             InitializeComponent();
 
             foreach (var item in Form1.Filters)
             {
-                FiltersList.Items.Add(item);
+                FiltersList.Items.Add(item.Name);
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            chart1.Series[0].Points.Clear();
-            Filter filt = new Filter();
-            double tempFreq = 0, tempAtt = 0;
-            foreach (DataGridViewRow item in FilterPointGrid.Rows)
-            {
-                if (item.Cells[0].Value == null || item.Cells[1].Value == null) continue;
-                if (!Input.TryParse(item.Cells[0].Value.ToString(), out tempFreq))
-                    continue;
-                if (!Input.TryParse(item.Cells[1].Value.ToString(), out tempAtt))
-                    continue;
-                filt.Points.Add(new Point(tempFreq, tempAtt));
-            }
-
-            if (sender == button1) Form1.Filters.Add(filt);
-            foreach (Point item in filt.Points)
-            {
-                chart1.Series[0].Points.AddXY(item.Freq, item.Att);
-            }
-        }
-
-        private void chart1_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -95,16 +77,6 @@ namespace PreobrCalc
             chart1.Series[2].Points.AddXY(3000, temp.Apply(3000, 0));
         }
 
-        private void dataGridView1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
         private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -113,20 +85,50 @@ namespace PreobrCalc
                 FilterPointGrid.Rows.RemoveAt(e.RowIndex);
         }
 
-        private void FilterPointGrid_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-
-        }
-
         private void FilterPointGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            button1_Click(sender, e);
+            chart1.Series[0].Points.Clear();
+            chart1.Series[0].LegendText = FiltNameEdit.Text;
+            chart1.Series[1].IsVisibleInLegend = false;
+            chart1.Series[2].IsVisibleInLegend = false;
+            Filter filt = new Filter();
+            double tempFreq = 0, tempAtt = 0;
+            foreach (DataGridViewRow item in FilterPointGrid.Rows)
+            {
+                if (item.Cells[0].Value == null || item.Cells[1].Value == null) continue;
+                if (!Input.TryParse(item.Cells[0].Value.ToString(), out tempFreq))
+                    continue;
+                if (!Input.TryParse(item.Cells[1].Value.ToString(), out tempAtt))
+                    continue;
+                filt.Points.Add(new Point(tempFreq, tempAtt));
+            }
+            foreach (Point item in filt.Points)
+            {
+                chart1.Series[0].Points.AddXY(item.Freq, item.Att);
+            }
         }
 
         private void SaveToFileBtn_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.ShowDialog();
+            SaveBaseDialog.ShowDialog();
+        }
 
+        private void FiltersList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Filter temp = Form1.Filters[FiltersList.SelectedIndex];
+            chart1.Series[0].Points.Clear();
+            chart1.Series[0].LegendText = temp.Name;
+            chart1.Series[1].IsVisibleInLegend = false;
+            chart1.Series[2].IsVisibleInLegend = false;
+            foreach (var item in temp.Points)
+            {
+                chart1.Series[0].Points.AddXY(item.Freq, item.Att);
+            }
+        }
+
+        private void SaveBaseDialog_FileOk(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel) return;
             FiltersBase.FiltersBase fBase = new FiltersBase.FiltersBase();
             foreach (var item in Form1.Filters)
             {
@@ -150,20 +152,144 @@ namespace PreobrCalc
                 fBase.Filters.Add(tempf);
             }
 
-            using (var output = File.Create("filters.dat"))
+            using (var output = File.Create(SaveBaseDialog.FileNames[0]))
             {
                 fBase.WriteTo(output);
             }
         }
 
-        private void FiltersList_SelectedIndexChanged(object sender, EventArgs e)
+        private void LoadBaseAndOverride_Click(object sender, EventArgs e)
         {
-            Filter temp=(Filter)FiltersList.SelectedItem;
-            chart1.Series[0].Points.Clear();
-            foreach (var item in temp.Points)
+            LdAct = LoadAction.OVER;
+            LoadBaseDialog.ShowDialog();
+        }
+
+        private void LoadBaseAndSum_Click(object sender, EventArgs e)
+        {
+            LdAct = LoadAction.MULT;
+            LoadBaseDialog.ShowDialog();
+        }
+
+        private void LoadBaseDialog_FileOk(object sender, CancelEventArgs e)
+        {
+            if (e.Cancel) return;
+            switch (LdAct)
             {
-                chart1.Series[0].Points.AddXY(item.Freq, item.Att);
+                case LoadAction.MULT:
+                    {
+                        FiltersBase.FiltersBase fBase;
+                        try
+                        {
+                            using (var input = File.OpenRead(LoadBaseDialog.FileNames[0]))
+                            {
+                                fBase = FiltersBase.FiltersBase.Parser.ParseFrom(input);
+                                if (fBase.Filters.Count < 1) return;
+                                foreach (var item in fBase.Filters)
+                                {
+                                    Filter temp = new Filter()
+                                    {
+                                        Band = item.Band,
+                                        CenterFreq = item.CenterFreq,
+                                        IsTunable = item.IsTunable,
+                                        Name = item.Name
+                                    };
+                                    foreach (var point in item.Points)
+                                    {
+                                        temp.Points.Add(new Point(point.Freq, point.Att));
+                                    }
+                                    Form1.Filters.Add(temp);
+                                }
+                            }
+                        }
+                        catch (IOException exception)
+                        {
+                            MessageBox.Show(exception.ToString());
+                        }
+                        LdAct = LoadAction.NOPE;
+                    }
+                    break;
+                case LoadAction.OVER:
+                    {
+                        Form1.Filters.Clear();
+                        FiltersBase.FiltersBase fBase;
+                        try
+                        {
+                            using (var input = File.OpenRead(LoadBaseDialog.FileNames[0]))
+                            {
+                                fBase = FiltersBase.FiltersBase.Parser.ParseFrom(input);
+                                if (fBase.Filters.Count < 1) return;
+                                foreach (var item in fBase.Filters)
+                                {
+                                    Filter temp = new Filter()
+                                    {
+                                        Band = item.Band,
+                                        CenterFreq = item.CenterFreq,
+                                        IsTunable = item.IsTunable,
+                                        Name = item.Name
+                                    };
+                                    foreach (var point in item.Points)
+                                    {
+                                        temp.Points.Add(new Point(point.Freq, point.Att));
+                                    }
+                                    Form1.Filters.Add(temp);
+                                }
+                            }
+                        }
+                        catch (IOException exception)
+                        {
+                            MessageBox.Show(exception.ToString());
+                        }
+
+                        LdAct = LoadAction.NOPE;
+                    }
+                    break;
+                case LoadAction.NOPE:
+                default:
+                    break;
             }
+        }
+
+        private void SaveFiltBtn_Click(object sender, EventArgs e)
+        {
+            Filter filt = new Filter();
+            double tempFreq = 0, tempAtt = 0;
+            foreach (DataGridViewRow item in FilterPointGrid.Rows)
+            {
+                if (item.Cells[0].Value == null || item.Cells[1].Value == null) continue;
+                if (!Input.TryParse(item.Cells[0].Value.ToString(), out tempFreq))
+                    continue;
+                if (!Input.TryParse(item.Cells[1].Value.ToString(), out tempAtt))
+                    continue;
+                filt.Points.Add(new Point(tempFreq, tempAtt));
+            }
+            filt.Name = FiltNameEdit.Text;
+
+            Form1.Filters.Add(filt);
+
+            FiltersList.Items.Clear();
+            foreach (var item in Form1.Filters)
+            {
+                FiltersList.Items.Add(item.Name);
+            }
+        }
+
+        private void DeleteFilterBtn_Click(object sender, EventArgs e)
+        {
+            int index = FiltersList.SelectedIndex;
+            if (index < 0 || index > Form1.Filters.Count - 1) return;
+            Form1.Filters.RemoveAt(index);
+
+            FiltersList.Items.Clear();
+            foreach (var item in Form1.Filters)
+            {
+                FiltersList.Items.Add(item.Name);
+            }
+        }
+
+        private void ClearPointsTableBtn_Click(object sender, EventArgs e)
+        {
+            FiltNameEdit.Text = "";
+            FilterPointGrid.Rows.Clear();
         }
     }
 }

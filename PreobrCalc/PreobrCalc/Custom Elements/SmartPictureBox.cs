@@ -16,9 +16,9 @@ namespace PreobrCalc
         int Y = 0;
         const int dopSize = 2;
 
-        IBlock opBlock;
+        //IBlock opBlock;
 
-        public IBlock OperationBlock { get => opBlock; }
+        //public IBlock OperationBlock { get => opBlock; }
 
         public SmartPictureBox()
         {
@@ -111,14 +111,14 @@ namespace PreobrCalc
             }
         }
 
-        public void AssignOperation(IBlock op)
-        {
-            opBlock = op;
-        }
+        //public void AssignOperation(IBlock op)
+        //{
+        //    opBlock = op;
+        //}
 
-        public Type GetOperationType()
-        {
-            return opBlock.GetType();
-        }
+        //public Type GetOperationType()
+        //{
+        //    return opBlock.GetType();
+        //}
     }
 }

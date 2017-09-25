@@ -17,25 +17,35 @@ namespace PreobrCalc
         private Rectangle DragBoxFromMouseDown;
         private object TempObject;
         private System.Drawing.Point ScreenOffset;
-        //private List<IBlock> Blocks;
+        private List<IBlock> operationBlocks;
         private List<List<Point>> calcResults;
+        private bool Changed = true;
 
         public Form1()
         {
             InitializeComponent();
             _filters = new List<Filter>();
-            //Blocks = new List<IBlock>();
+            operationBlocks = new List<IBlock>();
             calcResults = new List<List<Point>>();
             _filters.Clear();
+            //SettingLineBox.HorizontalScroll.Enabled = true;
+            SettingLineBox.MaximumSize = new Size(Width - SettingLineBox.Location.X, Height - SettingLineBox.Location.Y);
+            //SettingLineBox.HorizontalScroll.Visible = true;
         }
 
         public static List<Filter> Filters { get => _filters; set => _filters = value; }
         public List<List<Point>> CalcResults { get => calcResults; set => calcResults = value; }
+        public List<IBlock> OperationBlocks { get => operationBlocks; set => operationBlocks = value; }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void OpenFilterEditorBtn_Click(object sender, EventArgs e)
         {
             FilterConstruct wnd = new FilterConstruct();
             wnd.Show();
+        }
+
+        public SmartPictureBox GetControlAtIndex(int index)
+        {
+            return (SmartPictureBox)ElementLineBox.Controls[index];
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -66,8 +76,41 @@ namespace PreobrCalc
             }
             catch (IOException exception)
             {
-                MessageBox.Show(exception.ToString());
+                //MessageBox.Show(exception.ToString());
             }
+        }
+
+        public double GetFin(object sender)
+        {
+            double freq = 0;
+
+            TextBox temp = (TextBox)sender;
+            int index = 0;
+
+            for (int i = 0; i < SettingLineBox.Controls.Count; i++)
+            {
+                if (temp.Parent.Parent == SettingLineBox.Controls[i])
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            for (int i = index - 1; i >= 0; i--)
+            {
+                if (OperationBlocks[i].GetType() == typeof(BSource))
+                {
+                    freq = ((BSource)OperationBlocks[i]).Freq;
+                    break;
+                }
+                else if (OperationBlocks[i].GetType() == typeof(BMixer))
+                {
+                    freq = ((BMixer)OperationBlocks[i]).Fprch;
+                    break;
+                }
+            }
+
+            return freq;
         }
 
         private void MouseDownAction(object sender, MouseEventArgs e)
@@ -123,14 +166,31 @@ namespace PreobrCalc
                     if (pic != null)
                     {
                         SmartPictureBox NewPic = new SmartPictureBox(pic.Image);
+
                         if (pic == FinPanelSource)
                         {
-                            NewPic.AssignOperation(new BSource());
+                            OperationBlocks.Add(new BSource());
+                            //NewPic.AssignOperation(new BSource());
+                            SettingLineBox.Controls.Add(new Custom_Elements.SourceSetupPanel((BSource)OperationBlocks[OperationBlocks.Count - 1], OperationBlocks[OperationBlocks.Count - 1].GetType().Name + "[" + (OperationBlocks.Count - 1).ToString() + "]"));
                         }
                         if (pic == AttPanelSource)
-                            NewPic.AssignOperation(new BAttenuator());
+                        {
+                            OperationBlocks.Add(new BAttenuator());
+                            //NewPic.AssignOperation(new BAttenuator());
+                            SettingLineBox.Controls.Add(new Custom_Elements.AttSetupPanel((BAttenuator)OperationBlocks[OperationBlocks.Count - 1], OperationBlocks[OperationBlocks.Count - 1].GetType().Name + "[" + (OperationBlocks.Count - 1).ToString() + "]"));
+                        }
                         if (pic == FiltPanelSource)
-                            NewPic.AssignOperation(new BFilter());
+                        {
+                            OperationBlocks.Add(new BFilter());
+                            //NewPic.AssignOperation(new BFilter());
+                            SettingLineBox.Controls.Add(new Custom_Elements.FilterSetupPanel((BFilter)OperationBlocks[OperationBlocks.Count - 1], OperationBlocks[OperationBlocks.Count - 1].GetType().Name + "[" + (OperationBlocks.Count - 1).ToString() + "]"));
+                        }
+                        if (pic == MixerPanelSource)
+                        {
+                            OperationBlocks.Add(new BMixer());
+                            //NewPic.AssignOperation(new BMixer());
+                            SettingLineBox.Controls.Add(new Custom_Elements.MixerSetupPanel((BMixer)OperationBlocks[OperationBlocks.Count - 1], OperationBlocks[OperationBlocks.Count - 1].GetType().Name + "[" + (OperationBlocks.Count - 1).ToString() + "]"));
+                        }
 
                         NewPic.SetLeftBtnEvent(DrawResult);
                         NewPic.SetRightBtnEvent(DeleteBlock);
@@ -180,16 +240,24 @@ namespace PreobrCalc
 
         private void CalcBtn_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < OperationBlocks.Count; i++)
+            {
+                if (!OperationBlocks[i].Ready())
+                {
+                    MessageBox.Show("Элемент " + OperationBlocks[i].GetType() + "[" + i.ToString() + "]" + " не настроен");
+                    return;
+                }
+            }
+
             System.Diagnostics.Stopwatch ms = new System.Diagnostics.Stopwatch();
             ms.Start();
             CalcResults.Clear();
-            for (int i = 0; i < ElementLineBox.Controls.Count; i++)
+            for (int i = 0; i < OperationBlocks.Count; i++)
             {
-                SmartPictureBox box = (SmartPictureBox)ElementLineBox.Controls[i];
-                if (i == 0 && box.GetOperationType() == typeof(BSource))
+                if (i == 0 && OperationBlocks[i].GetType() == typeof(BSource))
                 {
                     CalcResults.Add(new List<Point>());
-                    ((BSource)box.OperationBlock).Generate(CalcResults[0]);
+                    ((BSource)OperationBlocks[i]).Generate(CalcResults[0]);
                 }
                 else if (i == 0)
                 {
@@ -199,15 +267,21 @@ namespace PreobrCalc
                 else
                 {
                     CalcResults.Add(new List<Point>());
-                    box.OperationBlock.Apply(CalcResults[CalcResults.Count - 2], CalcResults[CalcResults.Count - 1]);
+                    OperationBlocks[i].Apply(CalcResults[CalcResults.Count - 2], CalcResults[CalcResults.Count - 1]);
                 }
             }
             ms.Stop();
+            Changed = false;
             MessageBox.Show("Готово. " + ms.ElapsedMilliseconds.ToString() + " мс.");
         }
 
         private void DrawResult(object sender, EventArgs e)
         {
+            if (Changed)
+            {
+                MessageBox.Show("Необходимо выполнить перерасчет");
+                return;
+            }
             for (int i = 0; i < ElementLineBox.Controls.Count; i++)
             {
                 if (((Button)sender).Parent == ElementLineBox.Controls[i])
@@ -215,16 +289,24 @@ namespace PreobrCalc
                     if (i > 0)
                     {
                         ChartProvider chart;
-                        if (((SmartPictureBox)ElementLineBox.Controls[i]).GetOperationType()==typeof(BFilter))
+                        if (OperationBlocks[i].GetType() == typeof(BFilter))
                         {
-                            SmartPictureBox box = (SmartPictureBox)ElementLineBox.Controls[i];
-                            chart = new ChartProvider(CalcResults[i - 1], CalcResults[i], ((BFilter)(box.OperationBlock)).Filter);
+                            chart = new ChartProvider(CalcResults[i - 1], CalcResults[i], ((BFilter)(OperationBlocks[i])).Filter);
                         }
                         else
                             chart = new ChartProvider(CalcResults[i - 1], CalcResults[i]);
-                        chart.Show();
+                        if (chart != null)
+                            chart.Show();
                     }
-                    //TODO: для источника сигнала
+                    else
+                    {
+                        if (OperationBlocks[i].GetType() == typeof(BSource))
+                        {
+                            ChartProvider chart;
+                            chart = new ChartProvider(CalcResults[i]);
+                            chart.Show();
+                        }
+                    }
                     return;
                 }
             }
@@ -232,11 +314,22 @@ namespace PreobrCalc
 
         private void DeleteBlock(object sender, EventArgs e)
         {
-            foreach (SmartPictureBox item in ElementLineBox.Controls)
+            //foreach (SmartPictureBox item in ElementLineBox.Controls)
+            //{
+            //    if (item == ((Button)sender).Parent)
+            //    {
+            //        ElementLineBox.Controls.Remove(item);
+            //        return;
+            //    }
+            //}
+            for (int i = 0; i < ElementLineBox.Controls.Count; i++)
             {
-                if (item == ((Button)sender).Parent)
+                if (ElementLineBox.Controls[i] == ((Button)sender).Parent)
                 {
-                    ElementLineBox.Controls.Remove(item);
+                    ElementLineBox.Controls.RemoveAt(i);
+                    OperationBlocks.RemoveAt(i);
+                    SettingLineBox.Controls.RemoveAt(i);
+                    Changed = true;
                     return;
                 }
             }
@@ -248,8 +341,7 @@ namespace PreobrCalc
             {
                 if (((Button)sender).Parent == ElementLineBox.Controls[i])
                 {
-                    BlockSetup stp = new BlockSetup(((SmartPictureBox)ElementLineBox.Controls[i]).OperationBlock);
-                    stp.Show();
+                    SettingLineBox.Controls[i].Focus();
                     return;
                 }
             }

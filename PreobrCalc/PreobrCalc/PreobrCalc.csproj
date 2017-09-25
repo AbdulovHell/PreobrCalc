@@ -56,6 +56,30 @@
     <Compile Include="BlockSetup.Designer.cs">
       <DependentUpon>BlockSetup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Custom Elements\AttSetupPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Custom Elements\AttSetupPanel.Designer.cs">
+      <DependentUpon>AttSetupPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Custom Elements\FilterSetupPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Custom Elements\FilterSetupPanel.Designer.cs">
+      <DependentUpon>FilterSetupPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Custom Elements\MixerSetupPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Custom Elements\MixerSetupPanel.Designer.cs">
+      <DependentUpon>MixerSetupPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Custom Elements\SourceSetupPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Custom Elements\SourceSetupPanel.Designer.cs">
+      <DependentUpon>SourceSetupPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Filter.cs" />
     <Compile Include="FilterConstruct.cs">
       <SubType>Form</SubType>
@@ -80,14 +104,26 @@
     <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SmartPictureBox.cs">
+    <Compile Include="Custom Elements\SmartPictureBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SmartPictureBox.Designer.cs">
+    <Compile Include="Custom Elements\SmartPictureBox.Designer.cs">
       <DependentUpon>SmartPictureBox.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="BlockSetup.resx">
       <DependentUpon>BlockSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Custom Elements\AttSetupPanel.resx">
+      <DependentUpon>AttSetupPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Custom Elements\FilterSetupPanel.resx">
+      <DependentUpon>FilterSetupPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Custom Elements\MixerSetupPanel.resx">
+      <DependentUpon>MixerSetupPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Custom Elements\SourceSetupPanel.resx">
+      <DependentUpon>SourceSetupPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FilterConstruct.resx">
       <DependentUpon>FilterConstruct.cs</DependentUpon>
@@ -107,7 +143,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="SmartPictureBox.resx">
+    <EmbeddedResource Include="Custom Elements\SmartPictureBox.resx">
       <DependentUpon>SmartPictureBox.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
