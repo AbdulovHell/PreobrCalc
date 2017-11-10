@@ -113,6 +113,36 @@ namespace PreobrCalc
             return freq;
         }
 
+        public void UpdateChildBlocks(object sender)
+        {
+            TextBox temp = (TextBox)sender;
+            int index = 0;
+
+            for (int i = 0; i < SettingLineBox.Controls.Count; i++)
+            {
+                if (temp.Parent.Parent == SettingLineBox.Controls[i])
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            for (int i = index + 1; i < SettingLineBox.Controls.Count; i++)
+            {
+                //if (OperationBlocks[i].GetType() == typeof(BSource))
+                //{
+
+                //    break;
+                //}
+                //else 
+                if (OperationBlocks[i].GetType() == typeof(BMixer))
+                {
+                    Custom_Elements.MixerSetupPanel panel = (Custom_Elements.MixerSetupPanel)SettingLineBox.Controls[i];
+                    panel.UpdateData();
+                }
+            }
+        }
+
         private void MouseDownAction(object sender, MouseEventArgs e)
         {
             TempObject = sender;
@@ -195,12 +225,59 @@ namespace PreobrCalc
                         NewPic.SetLeftBtnEvent(DrawResult);
                         NewPic.SetRightBtnEvent(DeleteBlock);
                         NewPic.SetMidBtnEvent(SetupBlock);
+                        NewPic.SetMainClick(Select_Click);
 
                         ElementLineBox.Controls.Add(NewPic);
                         ElementLineBox.MinimumSize = new Size((ElementLineBox.Controls.Count + 1) * 70, ElementLineBox.MinimumSize.Height);
+                        HideOtherSettings(SettingLineBox.Controls.Count - 1);
                     }
                 }
             }
+        }
+
+        private void HideOtherSettings(int index)
+        {
+            for (int i = 0; i < SettingLineBox.Controls.Count; i++)
+            {
+                if (i != index)
+                {
+                    SettingLineBox.Controls[i].Visible = false;
+                }
+                else
+                    SettingLineBox.Controls[i].Visible = true;
+            }
+
+            for (int i = 0; i < ElementLineBox.Controls.Count; i++)
+            {
+                if (i == index)
+                {
+                    ((SmartPictureBox)ElementLineBox.Controls[i]).SetActiveState(true);
+                }
+                else
+                {
+                    ((SmartPictureBox)ElementLineBox.Controls[i]).SetActiveState(false);
+                }
+            }
+        }
+
+        private void Select_Click(object sender, EventArgs e)
+        {
+            PictureBox temp = (PictureBox)sender;
+            int index = -1;
+
+            for (int i = 0; i < ElementLineBox.Controls.Count; i++)
+            {
+                if (temp.Parent == ElementLineBox.Controls[i])
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+                return;
+
+            HideOtherSettings(index);
         }
 
         private void ElementLineBox_DragOver(object sender, DragEventArgs e)
@@ -291,7 +368,7 @@ namespace PreobrCalc
                         ChartProvider chart;
                         if (OperationBlocks[i].GetType() == typeof(BFilter))
                         {
-                            chart = new ChartProvider(CalcResults[i - 1], CalcResults[i], ((BFilter)(OperationBlocks[i])).Filter);
+                            chart = new ChartProvider(CalcResults[i - 1], CalcResults[i], ((BFilter)(OperationBlocks[i])).Filter, ((BFilter)(OperationBlocks[i])).Multiplier);
                         }
                         else
                             chart = new ChartProvider(CalcResults[i - 1], CalcResults[i]);
@@ -312,16 +389,16 @@ namespace PreobrCalc
             }
         }
 
+        private void UpdateCaptions()
+        {
+            for (int i = 0; i < SettingLineBox.Controls.Count; i++)
+            {
+                ((Custom_Elements.IPanelInterface)SettingLineBox.Controls[i]).SetCaption(i);
+            }
+        }
+
         private void DeleteBlock(object sender, EventArgs e)
         {
-            //foreach (SmartPictureBox item in ElementLineBox.Controls)
-            //{
-            //    if (item == ((Button)sender).Parent)
-            //    {
-            //        ElementLineBox.Controls.Remove(item);
-            //        return;
-            //    }
-            //}
             for (int i = 0; i < ElementLineBox.Controls.Count; i++)
             {
                 if (ElementLineBox.Controls[i] == ((Button)sender).Parent)
@@ -330,6 +407,7 @@ namespace PreobrCalc
                     OperationBlocks.RemoveAt(i);
                     SettingLineBox.Controls.RemoveAt(i);
                     Changed = true;
+                    UpdateCaptions();
                     return;
                 }
             }
@@ -345,6 +423,11 @@ namespace PreobrCalc
                     return;
                 }
             }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            //textBox1.Text = Properties.Settings.Default.
         }
     }
 }

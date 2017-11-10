@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace PreobrCalc.Custom_Elements
 {
-    public partial class SourceSetupPanel : UserControl
+    public partial class SourceSetupPanel : UserControl,IPanelInterface
     {
         BSource op;
 
@@ -25,7 +25,12 @@ namespace PreobrCalc.Custom_Elements
             this.op = op;
             MainGroupBox.Text = caption;
         }
-        
+
+        public void SetCaption(int num)
+        {
+            MainGroupBox.Text = op.GetType().Name + "[" + num.ToString() + "]";
+        }
+
         private void FreqEdit_TextChanged(object sender, EventArgs e)
         {
             if (Input.TryParse(FreqEdit.Text, out double freq))
@@ -33,6 +38,7 @@ namespace PreobrCalc.Custom_Elements
                 if (freq <= 0) return;
                 op.Freq = freq;
                 op.Check();
+                ((Form1)Parent.Parent).UpdateChildBlocks(sender);
             }
         }
 

@@ -41,9 +41,9 @@
             // ImageBox
             // 
             this.ImageBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ImageBox.Location = new System.Drawing.Point(0, 0);
+            this.ImageBox.Location = new System.Drawing.Point(1, 1);
             this.ImageBox.Name = "ImageBox";
-            this.ImageBox.Size = new System.Drawing.Size(62, 62);
+            this.ImageBox.Size = new System.Drawing.Size(60, 60);
             this.ImageBox.TabIndex = 0;
             this.ImageBox.TabStop = false;
             // 
@@ -100,6 +100,7 @@
             this.MaximumSize = new System.Drawing.Size(64, 64);
             this.MinimumSize = new System.Drawing.Size(64, 64);
             this.Name = "SmartPictureBox";
+            this.Padding = new System.Windows.Forms.Padding(1);
             this.Size = new System.Drawing.Size(62, 62);
             ((System.ComponentModel.ISupportInitialize)(this.ImageBox)).EndInit();
             this.ResumeLayout(false);

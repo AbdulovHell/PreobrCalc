@@ -74,7 +74,7 @@ namespace PreobrCalc
                 chart1.Series[1].Points.AddXY(item.Freq, item.Att);
             }
 
-            chart1.Series[2].Points.AddXY(3000, temp.Apply(3000, 0));
+            //chart1.Series[2].Points.AddXY(3000, temp.Apply(3000, 0));
         }
 
         private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)

@@ -58,14 +58,13 @@
             this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(0, 24);
             this.chart1.Name = "chart1";
+            series1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
             series1.BorderWidth = 2;
             series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = System.Drawing.Color.Black;
             series1.Legend = "Legend1";
-            series1.MarkerColor = System.Drawing.Color.Red;
-            series1.MarkerSize = 10;
-            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
-            series1.Name = "After";
+            series1.Name = "Filter";
             series2.BorderWidth = 2;
             series2.ChartArea = "ChartArea1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
@@ -74,19 +73,21 @@
             series2.MarkerSize = 10;
             series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
             series2.Name = "Before";
-            series3.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
             series3.BorderWidth = 2;
             series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Color = System.Drawing.Color.Black;
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
             series3.Legend = "Legend1";
-            series3.Name = "Filter";
+            series3.MarkerColor = System.Drawing.Color.Red;
+            series3.MarkerSize = 10;
+            series3.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
+            series3.Name = "After";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Series.Add(series3);
             this.chart1.Size = new System.Drawing.Size(699, 331);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
+            this.chart1.Visible = false;
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // menuStrip1

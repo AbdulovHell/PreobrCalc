@@ -68,12 +68,20 @@ namespace PreobrCalc
                 {
                     if (filt.Points[i].Freq <= item.Freq && item.Freq <= filt.Points[i + 1].Freq)
                     {
-                        out_p.Add(new Point(item.Freq, filt.Apply(item.Freq, item.Att) * multiplier));
+                        double att = filt.Apply(item.Freq, item.Att, multiplier);
+                        if (att > Properties.Settings.Default.LowerLimit)
+                        {
+                            out_p.Add(new Point(item.Freq, att));
+                        }
                         break;
                     }
                     else if (item.Freq >= filt.Points.Last().Freq)
                     {
-                        out_p.Add(new Point(item.Freq, item.Att + filt.Points.Last().Att * multiplier));
+                        double att = item.Att + filt.Points.Last().Att * multiplier;
+                        if (att > Properties.Settings.Default.LowerLimit)
+                        {
+                            out_p.Add(new Point(item.Freq, att));
+                        }
                         break;
                     }
                 }
@@ -126,7 +134,8 @@ namespace PreobrCalc
         {
             foreach (var item in in_p)
             {
-                out_p.Add(new Point(item.Freq, item.Att + att));
+                if (item.Att + att > Properties.Settings.Default.LowerLimit)
+                    out_p.Add(new Point(item.Freq, item.Att + att));
             }
         }
     }
@@ -296,27 +305,21 @@ namespace PreobrCalc
                 {
                     for (int m = 0; m < order + 1; m++)
                     {
-                        double var1 = Math.Abs(n * fget - m * item.Freq), var2 = Math.Abs(n * fget + m * item.Freq) /*, var3 = (m * item.Freq - n * fget), var4 = ((-1 * n) * fget - m * item.Freq)*/;
-                        //if (var1 > 0)
-                        //{
-                        out_p.Add(new Point(var1, item.Att + mix[m, n]));
-                        a++;
-                        //}
-                        //if (var2 > 0)
-                        //{
-                        out_p.Add(new Point(var2, item.Att + mix[m, n]));
-                        b++;
-                        //}
-                        //if (var3 > 0)
-                        //{
-                        //    out_p.Add(new Point(var3, item.Att + mix[m, n]));
-                        //    c++;
-                        //}
-                        //if (var4 > 0)
-                        //{
-                        //    out_p.Add(new Point(var4, item.Att + mix[m, n]));
-                        //    d++;
-                        //}
+                        double att = item.Att + mix[m, n];
+                        if (att > Properties.Settings.Default.LowerLimit)
+                        {
+                            double var1 = Math.Abs(n * fget - m * item.Freq), var2 = Math.Abs(n * fget + m * item.Freq) /*, var3 = (m * item.Freq - n * fget), var4 = ((-1 * n) * fget - m * item.Freq)*/;
+                            if (var1 > 0)
+                            {
+                                out_p.Add(new Point(var1, att));
+                                a++;
+                            }
+                            if (var2 > 0)
+                            {
+                                out_p.Add(new Point(var2, att));
+                                b++;
+                            }
+                        }
                     }
                 }
             }

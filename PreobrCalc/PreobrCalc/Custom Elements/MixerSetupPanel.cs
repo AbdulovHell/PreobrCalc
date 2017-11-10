@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace PreobrCalc.Custom_Elements
 {
-    public partial class MixerSetupPanel : UserControl
+    public partial class MixerSetupPanel : UserControl,IPanelInterface
     {
         BMixer op;
         double Fin=0;
@@ -20,12 +20,22 @@ namespace PreobrCalc.Custom_Elements
             InitializeComponent();
         }
 
+        public void SetCaption(int num)
+        {
+            MainGroupBox.Text = op.GetType().Name + "[" + num.ToString() + "]";
+        }
+
         public MixerSetupPanel(BMixer op, string caption)
         {
             InitializeComponent();
             this.op = op;
             MainGroupBox.Text = caption;
             op.Order = decimal.ToInt32(OrderNumEdit.Value);
+        }
+
+        public void UpdateData()
+        {
+           FprEdit_TextChanged(FprEdit,new EventArgs());
         }
 
         private void FprEdit_TextChanged(object sender, EventArgs e)
@@ -48,6 +58,7 @@ namespace PreobrCalc.Custom_Elements
                 op.Fget = Fget;
                 op.FinBelowFget = FinFgetPosChk.Checked;
                 op.Check();
+                ((Form1)Parent.Parent).UpdateChildBlocks(sender);
             }
         }
 
@@ -75,6 +86,7 @@ namespace PreobrCalc.Custom_Elements
                 op.Fget = Fget;
                 op.FinBelowFget = FinFgetPosChk.Checked;
                 op.Check();
+                ((Form1)Parent.Parent).UpdateChildBlocks(FprEdit);
             }
         }
     }

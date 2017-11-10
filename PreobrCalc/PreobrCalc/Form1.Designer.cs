@@ -43,6 +43,8 @@
             this.InstrumentMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFilterEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SettingLineBox = new System.Windows.Forms.FlowLayoutPanel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.ElementsSourceBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FinPanelSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AttPanelSource)).BeginInit();
@@ -57,7 +59,7 @@
             this.ElementLineBox.AutoSize = true;
             this.ElementLineBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ElementLineBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ElementLineBox.Location = new System.Drawing.Point(12, 118);
+            this.ElementLineBox.Location = new System.Drawing.Point(12, 158);
             this.ElementLineBox.MinimumSize = new System.Drawing.Size(70, 70);
             this.ElementLineBox.Name = "ElementLineBox";
             this.ElementLineBox.Size = new System.Drawing.Size(70, 70);
@@ -123,6 +125,7 @@
             // 
             // FiltPanelSource
             // 
+            this.FiltPanelSource.BackColor = System.Drawing.SystemColors.Control;
             this.FiltPanelSource.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.FiltPanelSource.Image = ((System.Drawing.Image)(resources.GetObject("FiltPanelSource.Image")));
             this.FiltPanelSource.Location = new System.Drawing.Point(219, 3);
@@ -137,7 +140,7 @@
             // 
             // CalcBtn
             // 
-            this.CalcBtn.Location = new System.Drawing.Point(306, 89);
+            this.CalcBtn.Location = new System.Drawing.Point(485, 69);
             this.CalcBtn.Name = "CalcBtn";
             this.CalcBtn.Size = new System.Drawing.Size(75, 23);
             this.CalcBtn.TabIndex = 5;
@@ -153,7 +156,7 @@
             this.InstrumentMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(904, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(899, 24);
             this.menuStrip1.TabIndex = 6;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -194,22 +197,39 @@
             // 
             // SettingLineBox
             // 
-            this.SettingLineBox.AutoScroll = true;
-            this.SettingLineBox.AutoSize = true;
             this.SettingLineBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.SettingLineBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.SettingLineBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.SettingLineBox.Location = new System.Drawing.Point(0, 231);
-            this.SettingLineBox.MinimumSize = new System.Drawing.Size(200, 330);
+            this.SettingLineBox.Location = new System.Drawing.Point(0, 234);
             this.SettingLineBox.Name = "SettingLineBox";
-            this.SettingLineBox.Size = new System.Drawing.Size(904, 330);
+            this.SettingLineBox.Size = new System.Drawing.Size(899, 181);
             this.SettingLineBox.TabIndex = 7;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(591, 45);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(80, 17);
+            this.checkBox1.TabIndex = 8;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(485, 43);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 9;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(904, 561);
+            this.ClientSize = new System.Drawing.Size(899, 415);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.SettingLineBox);
             this.Controls.Add(this.CalcBtn);
             this.Controls.Add(this.ElementsSourceBox);
@@ -247,6 +267,8 @@
         private System.Windows.Forms.ToolStripMenuItem InstrumentMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenFilterEditorMenuItem;
         private System.Windows.Forms.FlowLayoutPanel SettingLineBox;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

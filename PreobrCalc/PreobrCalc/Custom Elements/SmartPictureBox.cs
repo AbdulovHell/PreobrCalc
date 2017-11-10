@@ -65,6 +65,11 @@ namespace PreobrCalc
             timer1.Enabled = false;
         }
 
+        public void SetCaption(string txt)
+        {
+            Text = txt;
+        }
+
         public void SetImage(Image img)
         {
             ImageBox.Image = img;
@@ -90,6 +95,23 @@ namespace PreobrCalc
             LeftBtn.Visible = b;
             MidBtn.Visible = b;
             RightBtn.Visible = b;
+        }
+
+        public void SetMainClick(EventHandler EventClick)
+        {
+            ImageBox.Click += EventClick;
+        }
+
+        public void SetActiveState(bool state)
+        {
+            if (state)
+            {
+                BackColor = Color.Red;
+            }
+            else
+            {
+                BackColor = Color.White;
+            }
         }
 
         private void Timer1_Tick(object sender, EventArgs e)

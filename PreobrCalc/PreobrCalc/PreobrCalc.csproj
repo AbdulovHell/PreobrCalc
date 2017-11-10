@@ -74,6 +74,7 @@
     <Compile Include="Custom Elements\MixerSetupPanel.Designer.cs">
       <DependentUpon>MixerSetupPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Custom Elements\PanelInterface.cs" />
     <Compile Include="Custom Elements\SourceSetupPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

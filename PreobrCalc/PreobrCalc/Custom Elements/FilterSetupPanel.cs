@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace PreobrCalc.Custom_Elements
 {
-    public partial class FilterSetupPanel : UserControl
+    public partial class FilterSetupPanel : UserControl,IPanelInterface
     {
         BFilter op;
 
@@ -28,6 +28,11 @@ namespace PreobrCalc.Custom_Elements
             {
                 FIltersList.Items.Add(item.Name);
             }
+        }
+
+        public void SetCaption(int num)
+        {
+            MainGroupBox.Text = op.GetType().Name + "[" + num.ToString() + "]";
         }
 
         private void FIltersList_SelectedIndexChanged(object sender, EventArgs e)
